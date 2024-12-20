@@ -25,10 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO) {
+
         Product product = modelMapper.map(productDTO, Product.class);
         Product productFromDb = productRepository.findByProductName(product.getProductName());
         if (productFromDb != null){
-            throw new APIException("Product with the name " + product.getProductName() +" already exists !!!");
+            throw new APIException("Produto com o nome " + product.getProductName() +" Já existe");
         }
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
