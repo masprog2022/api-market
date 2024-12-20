@@ -1,4 +1,4 @@
-package com.masprog.ice_market_api.model;
+package com.masprog.ice_market_api.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
