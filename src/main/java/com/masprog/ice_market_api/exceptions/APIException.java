@@ -1,7 +1,7 @@
 package com.masprog.ice_market_api.exceptions;
 
-public class APIExecption extends RuntimeException{
-    public APIExecption(String message){
+public class APIException extends RuntimeException{
+    public APIException(String message){
         super(message);
     }
 }
