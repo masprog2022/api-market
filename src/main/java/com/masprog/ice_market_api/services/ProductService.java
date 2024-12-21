@@ -7,5 +7,6 @@ public interface ProductService {
 
     ProductDTO addProduct(ProductDTO product);
     ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+    ProductDTO updateProduct(ProductDTO productDTO, Long id);
 
 }
