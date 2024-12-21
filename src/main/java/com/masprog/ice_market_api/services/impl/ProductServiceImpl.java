@@ -1,6 +1,7 @@
 package com.masprog.ice_market_api.services.impl;
 
 import com.masprog.ice_market_api.exceptions.APIException;
+import com.masprog.ice_market_api.exceptions.ResourceNotFoundException;
 import com.masprog.ice_market_api.models.Product;
 import com.masprog.ice_market_api.payload.ProductDTO;
 import com.masprog.ice_market_api.payload.ProductResponse;
@@ -71,6 +72,17 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
 
 
+    }
+
+    @Override
+    public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
+       Product savedProduct = productRepository.findById(productId)
+               .orElseThrow(() -> new ResourceNotFoundException("product", "productId", productId));
+
+       Product product = modelMapper.map(productDTO, Product.class);
+       product.setProductId(productId);
+       savedProduct = productRepository.save(product);
+       return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
 
