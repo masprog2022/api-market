@@ -6,6 +6,7 @@ import com.masprog.ice_market_api.models.Address;
 import com.masprog.ice_market_api.models.User;
 import com.masprog.ice_market_api.payload.AddressDTO;
 import com.masprog.ice_market_api.repositories.AddressRepository;
+import com.masprog.ice_market_api.repositories.UserRepository;
 import com.masprog.ice_market_api.services.AddressService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,13 @@ public class AddressServiceImpl implements AddressService {
 
     private final ModelMapper modelMapper;
     private final AddressRepository addressRepository;
+    private final UserRepository userRepository;
 
 
-    public AddressServiceImpl(ModelMapper modelMapper, AddressRepository addressRepository) {
+    public AddressServiceImpl(ModelMapper modelMapper, AddressRepository addressRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.addressRepository = addressRepository;
-
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -57,6 +59,15 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public String deleteAddress(Long addressId) {
-        return "";
+        Address addressFromDatabase = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        User user = addressFromDatabase.getUser();
+        user.getAddressList().removeIf(address -> address.getAddressId().equals(addressId));
+        userRepository.save(user);
+
+        addressRepository.delete(addressFromDatabase);
+
+        return "Address deleted successfully with addressId: " + addressId;
     }
 }
