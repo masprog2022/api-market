@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,12 +29,24 @@ public class AddressController {
 
     @Operation(summary = "Listar todos endereços", description = "Apenas os ADMIN conseguem ver",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Produto listado com sucesso ",
+                    @ApiResponse(responseCode = "200", description = "Endereço listado com sucesso ",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class)))
             })
     @GetMapping("/addresses")
     public ResponseEntity<List<AddressDTO>> getAddresses(){
         List<AddressDTO> addressList = addressService.getAddresses();
         return new ResponseEntity<>(addressList, HttpStatus.OK);
+    }
+
+
+    @Operation(summary = "Mostrar endereço pelo ID", description = "Apenas os ADMIN conseguem ver",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Endereço flitrado com sucesso ",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class)))
+            })
+    @GetMapping("/addresses/{addressId}")
+    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId){
+        AddressDTO addressDTO = addressService.getAddressesById(addressId);
+        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
 }
