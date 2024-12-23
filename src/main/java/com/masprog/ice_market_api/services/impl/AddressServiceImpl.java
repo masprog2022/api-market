@@ -1,5 +1,7 @@
 package com.masprog.ice_market_api.services.impl;
 
+import com.masprog.ice_market_api.controllers.AddressController;
+import com.masprog.ice_market_api.exceptions.ResourceNotFoundException;
 import com.masprog.ice_market_api.models.Address;
 import com.masprog.ice_market_api.models.User;
 import com.masprog.ice_market_api.payload.AddressDTO;
@@ -16,9 +18,11 @@ public class AddressServiceImpl implements AddressService {
     private final ModelMapper modelMapper;
     private final AddressRepository addressRepository;
 
+
     public AddressServiceImpl(ModelMapper modelMapper, AddressRepository addressRepository) {
         this.modelMapper = modelMapper;
         this.addressRepository = addressRepository;
+
     }
 
     @Override
@@ -36,7 +40,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressDTO getAddressesById(Long addressId) {
-        return null;
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+        return modelMapper.map(address, AddressDTO.class);
     }
 
     @Override
