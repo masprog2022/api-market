@@ -19,7 +19,7 @@ public class SpringDocOpenApiConfig {
                 .info(new Info()
                         .title("Rest API - Ice Market api ")
                         .version("v1")
-                        .description("Api para venda especifica de gelo")
+                        .description("Api para venda especifica de produto 'gelo'")
                         .termsOfService("https://about-mauro.netlify.app/")
                         .license(
                                 new License()
