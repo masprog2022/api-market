@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,4 +46,16 @@ public class AddressController {
         AddressDTO addressDTO = addressService.getAddressesById(addressId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
+
+    @Operation(summary = "Remover endereço", description = "Apenas os ADMIN conseguem ver",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Endereço removido com sucesso ",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+            })
+    @DeleteMapping("/addresses/{addressId}")
+    public ResponseEntity<String> deleteAddress(@PathVariable Long addressId){
+        String status = addressService.deleteAddress(addressId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
 }
