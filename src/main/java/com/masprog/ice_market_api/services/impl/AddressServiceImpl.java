@@ -28,8 +28,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public AddressDTO createAddress(AddressDTO address, User user) {
-        return null;
+    public AddressDTO createAddress(AddressDTO addressDTO, User user) {
+        Address address = modelMapper.map(addressDTO, Address.class);
+        address.setUser(user);
+        List<Address> addressList = user.getAddressList();
+        addressList.add(address);
+        user.setAddressList(addressList);
+        Address savedAddress = addressRepository.save(address);
+        return modelMapper.map(savedAddress, AddressDTO.class);
     }
 
     @Override
@@ -49,12 +55,31 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDTO> getUserAddresses(User user) {
-        return List.of();
+       List<Address> addresses = user.getAddressList();
+       return addresses.stream()
+               .map(address -> modelMapper.map(address, AddressDTO.class))
+               .toList();
     }
 
     @Override
     public AddressDTO updateAddress(Long addressId, AddressDTO addressDto) {
-        return null;
+       Address addressFromDatabase = addressRepository.findById(addressId)
+               .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        addressFromDatabase.setStreet(addressDto.getStreet());
+        addressFromDatabase.setPostalCode(addressDto.getPostalCode());
+        addressFromDatabase.setMunicipality(addressDto.getMunicipality());
+        addressFromDatabase.setCountry(addressDto.getCountry());
+        addressFromDatabase.setProvince(addressDto.getProvince());
+
+        Address updatedAddress = addressRepository.save(addressFromDatabase);
+
+        User user = addressFromDatabase.getUser();
+        user.getAddressList().removeIf(address -> address.getAddressId().equals(addressId));
+        user.getAddressList().add(updatedAddress);
+        userRepository.save(user);
+
+        return modelMapper.map(updatedAddress, AddressDTO.class);
     }
 
     @Override
@@ -70,4 +95,7 @@ public class AddressServiceImpl implements AddressService {
 
         return "Address deleted successfully with addressId: " + addressId;
     }
+
+
+
 }
