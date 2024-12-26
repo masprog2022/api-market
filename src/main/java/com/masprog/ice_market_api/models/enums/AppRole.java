@@ -1,4 +1,4 @@
-package com.masprog.ice_market_api.models;
+package com.masprog.ice_market_api.models.enums;
 
 public enum AppRole {
     ROLE_USER,

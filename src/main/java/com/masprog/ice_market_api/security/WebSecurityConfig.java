@@ -1,7 +1,7 @@
 package com.masprog.ice_market_api.security;
 
 
-import com.masprog.ice_market_api.models.AppRole;
+import com.masprog.ice_market_api.models.enums.AppRole;
 import com.masprog.ice_market_api.models.Role;
 import com.masprog.ice_market_api.models.User;
 import com.masprog.ice_market_api.repositories.RoleRepository;
