@@ -1,5 +1,6 @@
 package com.masprog.ice_market_api.models;
 
+import com.masprog.ice_market_api.models.enums.AppRole;
 import jakarta.persistence.*;
 import lombok.ToString;
 
@@ -8,7 +9,7 @@ import lombok.ToString;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long
             roleId;

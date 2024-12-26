@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tb_address")
 public class Address {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
 
     @NotBlank
