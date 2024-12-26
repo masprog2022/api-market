@@ -1,13 +1,17 @@
 package com.masprog.ice_market_api.controllers;
 
+import com.masprog.ice_market_api.models.User;
 import com.masprog.ice_market_api.payload.AddressDTO;
+import com.masprog.ice_market_api.payload.ProductDTO;
 import com.masprog.ice_market_api.services.AddressService;
+import com.masprog.ice_market_api.util.AuthUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +23,26 @@ import java.util.List;
 @RequestMapping("/api")
 public class AddressController {
 
+    @Autowired
+    AuthUtil authUtil;
+
     private final AddressService addressService;
 
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
+    }
+
+    @Operation(summary = "Registar endereço", description = "Requisição feita por qualquer user",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Endereço registado com sucesso ",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDTO.class)))
+            })
+    @PostMapping("/addresses")
+    public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO){
+        User user = authUtil.loggedInUser();
+        AddressDTO savedAddressDTO = addressService.createAddress(addressDTO, user);
+        return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
+
     }
 
 
