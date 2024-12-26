@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "tb_order_items")
-public class OrdemItem {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,24 +19,28 @@ public class OrdemItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
     @NotNull
     @Min(1)
     private Integer quantity;
 
-    @NotNull
+
     @DecimalMin("0.00")
     private BigDecimal orderedProductPrice;
 
-    public OrdemItem() {
+    public OrderItem() {
     }
 
-    public OrdemItem(Long orderItemId, Product product, Integer quantity, BigDecimal orderedProductPrice) {
+    public OrderItem(Long orderItemId, Product product, Order order, Integer quantity, BigDecimal orderedProductPrice) {
         this.orderItemId = orderItemId;
         this.product = product;
+        this.order = order;
         this.quantity = quantity;
         this.orderedProductPrice = orderedProductPrice;
     }
-
 
     public BigDecimal calculateSubTotal() {
         return orderedProductPrice.multiply(BigDecimal.valueOf(quantity));
@@ -72,6 +76,14 @@ public class OrdemItem {
 
     public void setOrderedProductPrice(@NotNull @DecimalMin("0.00") BigDecimal orderedProductPrice) {
         this.orderedProductPrice = orderedProductPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
 
