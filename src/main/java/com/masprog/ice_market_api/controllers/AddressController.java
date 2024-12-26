@@ -90,4 +90,17 @@ public class AddressController {
         AddressDTO updatedAddress = addressService.updateAddress(addressId, addressDTO);
         return new ResponseEntity<>(updatedAddress, HttpStatus.OK);
     }
+
+    @Operation(summary = "Listar endereços pelo user", description = "Todos user logados podem ver seus endereços",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Endereço listados com sucesso ",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class)))
+            })
+    @GetMapping("/addresses/user")
+    public ResponseEntity<List<AddressDTO>> getUserAddresses(){
+        User user = authUtil.loggedInUser();
+
+        List<AddressDTO> addressList = addressService.getUserAddresses(user);
+        return new ResponseEntity<>(addressList, HttpStatus.OK);
+    }
 }
