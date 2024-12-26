@@ -12,7 +12,7 @@ public class Address {
     private Long addressId;
 
     @NotBlank
-    @Size(max = 10, message = "Street name must be at least 10 characters")
+    @Size(max = 100, message = "Street name must be at least 10 characters")
     private String street;
 
     @NotBlank
