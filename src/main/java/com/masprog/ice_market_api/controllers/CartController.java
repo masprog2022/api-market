@@ -4,6 +4,7 @@ import com.masprog.ice_market_api.exceptions.ResourceNotFoundException;
 import com.masprog.ice_market_api.models.Cart;
 import com.masprog.ice_market_api.payload.CartDTO;
 import com.masprog.ice_market_api.payload.ProductDTO;
+import com.masprog.ice_market_api.payload.UpdateProductQuantityRequest;
 import com.masprog.ice_market_api.repositories.CartRepository;
 import com.masprog.ice_market_api.services.CartService;
 import com.masprog.ice_market_api.util.AuthUtil;
@@ -78,6 +79,7 @@ public class CartController {
         return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
     }
 
+
     @Operation(summary = "Deletar produto do carrinho", description = "Requisição feita pelo user logado",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Produto deletado com sucesso do carrinho ",
@@ -89,5 +91,17 @@ public class CartController {
         String status = cartService.deleteProductFromCart(cartId, productId);
 
         return new ResponseEntity<String>(status, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Actualizar a quantidade do carrinho", description = "Requisição feita pelo user logado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Produto deletado com sucesso do carrinho ",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartDTO.class)))
+            })
+    @PutMapping("/carts/products/{productId}")
+    public ResponseEntity<CartDTO> updateProductQuantityInCart(@PathVariable Long productId,
+                                                               @RequestBody UpdateProductQuantityRequest request){
+        CartDTO updatedCart = cartService.updateProductQuantityInCart(productId, request.getQuantity());
+        return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 }
