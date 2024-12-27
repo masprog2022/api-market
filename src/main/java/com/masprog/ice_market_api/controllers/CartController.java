@@ -1,5 +1,6 @@
 package com.masprog.ice_market_api.controllers;
 
+import com.masprog.ice_market_api.models.Cart;
 import com.masprog.ice_market_api.payload.CartDTO;
 import com.masprog.ice_market_api.payload.ProductDTO;
 import com.masprog.ice_market_api.repositories.CartRepository;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Carrinho de compra", description = "Endpoints para gerenciar carrinhos de compras" )
 @RestController
@@ -44,6 +47,17 @@ public class CartController {
                                                     @PathVariable Integer quantity){
         CartDTO cartDTO = cartService.addProductToCart(productId, quantity);
         return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Listar todos carrinhos", description = "Requisição feita pelo user logado Admin",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Listado com sucesso todos carrinhos",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartDTO.class)))
+            })
+    @GetMapping("/carts")
+    public ResponseEntity<List<CartDTO>> getCarts(){
+       List<CartDTO> cartDTOS = cartService.getAllCarts();
+       return new ResponseEntity<List<CartDTO>>(cartDTOS, HttpStatus.OK);
     }
 
     @Operation(summary = "Deletar produto do carrinho", description = "Requisição feita pelo user logado",
