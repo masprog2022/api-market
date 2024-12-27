@@ -1,5 +1,6 @@
 package com.masprog.ice_market_api.controllers;
 
+import com.masprog.ice_market_api.exceptions.ResourceNotFoundException;
 import com.masprog.ice_market_api.models.Cart;
 import com.masprog.ice_market_api.payload.CartDTO;
 import com.masprog.ice_market_api.payload.ProductDTO;
@@ -58,6 +59,23 @@ public class CartController {
     public ResponseEntity<List<CartDTO>> getCarts(){
        List<CartDTO> cartDTOS = cartService.getAllCarts();
        return new ResponseEntity<List<CartDTO>>(cartDTOS, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Listar Carrinhos do user", description = "Requisição feita pelo user logado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Listado com sucesso todos carrinhos",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartDTO.class)))
+            })
+    @GetMapping("/carts/users/cart")
+    public ResponseEntity<CartDTO> getCartById(){
+        String emailId = authUtil.loggedInEmail();
+        Cart cart = cartRepository.findCartByEmail(emailId);
+        if (cart == null ){
+            throw new ResourceNotFoundException("Cart", "cartId", emailId);
+        }
+        Long cartId = cart.getCartId();
+        CartDTO cartDTO = cartService.getCart(emailId, cartId);
+        return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "Deletar produto do carrinho", description = "Requisição feita pelo user logado",
