@@ -138,7 +138,62 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDTO updateProductQuantityInCart(Long productId, Integer quantity) {
-        return null;
+        String emailId = authUtil.loggedInEmail();
+
+        // Validação e busca do carrinho do usuário
+        Cart cart = cartRepository.findCartByEmail(emailId);
+        if (cart == null) {
+            throw new ResourceNotFoundException("Cart", "emailId", emailId);
+        }
+
+        // Busca do produto
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        if (product.getQuantity() < quantity) {
+            throw new APIException("Please, make an order of the " + product.getProductName()
+                    + " less than or equal to the quantity " + product.getQuantity() + ".");
+        }
+
+        // Busca do item do carrinho
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCartId(), productId);
+        if (cartItem == null) {
+            throw new APIException("Product " + product.getProductName() + " not available in the cart!!!");
+        }
+
+        // Cálculo da nova quantidade
+        int newQuantity = cartItem.getQuantity() + quantity;
+        if (newQuantity < 0) {
+            throw new APIException("The resulting quantity cannot be negative.");
+        }
+
+        // Atualização ou remoção do item
+        if (newQuantity == 0) {
+            deleteProductFromCart(cart.getCartId(), productId);
+        } else {
+            cartItem.setProductPrice(product.getPrice());
+            cartItem.setQuantity(newQuantity);
+        }
+
+        // Recalcular o total do carrinho
+        double newTotalPrice = cart.getCartItems().stream()
+                .mapToDouble(item -> item.getProductPrice() * item.getQuantity())
+                .sum();
+        cart.setTotalPrice(newTotalPrice);
+        cartRepository.save(cart);
+
+        // Conversão para DTO
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        List<ProductDTO> products = cart.getCartItems().stream()
+                .map(item -> {
+                    ProductDTO prd = modelMapper.map(item.getProduct(), ProductDTO.class);
+                    prd.setQuantity(item.getQuantity());
+                    return prd;
+                })
+                .toList();
+        cartDTO.setProducts(products);
+
+        return cartDTO;
     }
 
     @Override
@@ -175,8 +230,28 @@ public class CartServiceImpl implements CartService {
 
 
 
-    @Override
+  /*  @Override
     public void updateProductInCarts(Long cartId, Long productId) {
+       Cart cart = cartRepository.findById(cartId)
+               .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
 
-    }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
+
+        if (cartItem == null) {
+            throw new APIException("Product " + product.getProductName() + " not available in the cart!!!");
+        }
+
+        double cartPrice = cart.getTotalPrice()
+                - (cartItem.getProductPrice() * cartItem.getQuantity());
+
+        cartItem.setProductPrice(product.getPrice());
+
+        cart.setTotalPrice(cartPrice
+                + (cartItem.getProductPrice() * cartItem.getQuantity()));
+
+        cartItem = cartItemRepository.save(cartItem);
+    }*/
 }
