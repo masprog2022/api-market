@@ -24,8 +24,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @NotNull
-    @DecimalMin(value = "0.00", inclusive = false, message = "Total price must be greater than 0")
+
     private Double totalPrice = 0.0;
 
 
@@ -70,10 +69,4 @@ public class Cart {
         this.totalPrice = totalPrice;
     }
 
-
-    public Double calculateTotalPrice() {
-        return cartItems.stream()
-                .map(item -> item.calculateSubtotal().doubleValue())
-                .reduce(0.0, Double::sum);
-    }
 }

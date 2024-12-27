@@ -17,6 +17,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
+    @Column(nullable = false, unique = true)
+    private String phoneNumber;
+
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -42,8 +45,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderId, List<OrderItem> orderItems, LocalDate orderDate, Payment payment, BigDecimal total, OrderStatus orderStatus, Address address) {
+    public Order(Long orderId, String phoneNumber, List<OrderItem> orderItems, LocalDate orderDate, Payment payment, BigDecimal total, OrderStatus orderStatus, Address address) {
         this.orderId = orderId;
+        this.phoneNumber = phoneNumber;
         this.orderItems = orderItems;
         this.orderDate = orderDate;
         this.payment = payment;
@@ -64,6 +68,14 @@ public class Order {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public List<OrderItem> getOrderItems() {

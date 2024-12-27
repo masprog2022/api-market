@@ -20,20 +20,22 @@ public class Product {
     @Size(min = 3, message = "Product name must contain at least 3 characters")
     private String productName;
 
+    private Integer quantity;
+
     @NotBlank
     @Size(min = 6, message = "Product description must contain at least 6 characters")
     private String productDescription;
 
-    private BigDecimal price;
+    private double price;
     private boolean availability;
 
 
 
     public Product(){}
 
-    public Product(Long productId, String productName, String productDescription, BigDecimal price, boolean availability) {
-        this.productId = productId;
+    public Product(String productName, Integer quantity, String productDescription, double price, boolean availability) {
         this.productName = productName;
+        this.quantity = quantity;
         this.productDescription = productDescription;
         this.price = price;
         this.availability = availability;
@@ -51,8 +53,17 @@ public class Product {
         return productName;
     }
 
+
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public String getProductDescription() {
@@ -63,11 +74,11 @@ public class Product {
         this.productDescription = productDescription;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

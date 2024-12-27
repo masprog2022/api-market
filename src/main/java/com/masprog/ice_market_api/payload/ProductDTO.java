@@ -10,15 +10,16 @@ public class ProductDTO {
     private Long productId;
     private String productName;
     private String productDescription;
-    private BigDecimal price;
+    private Integer quantity;
+    private double price;
     private boolean availability;
 
     public ProductDTO(){}
 
-    public ProductDTO(Long productId, String productName, String productDescription, BigDecimal price, boolean availability) {
-        this.productId = productId;
+    public ProductDTO(String productName, String productDescription, Integer quantity, double price, boolean availability) {
         this.productName = productName;
         this.productDescription = productDescription;
+        this.quantity = quantity;
         this.price = price;
         this.availability = availability;
     }
@@ -47,11 +48,19 @@ public class ProductDTO {
         this.productDescription = productDescription;
     }
 
-    public BigDecimal getPrice() {
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

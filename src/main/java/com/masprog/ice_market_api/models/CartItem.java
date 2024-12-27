@@ -28,14 +28,12 @@ public class CartItem {
     @Min(1)
     private Integer quantity;
 
-    @NotNull
-    @DecimalMin(value = "0.00", inclusive = false, message = "Price must be greater than 0")
-    private BigDecimal productPrice;
+    private double productPrice;
 
     public CartItem() {
     }
 
-    public CartItem(Cart cart, Product product, Integer quantity, BigDecimal productPrice) {
+    public CartItem(Cart cart, Product product, Integer quantity, double productPrice) {
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
@@ -58,12 +56,30 @@ public class CartItem {
         return quantity;
     }
 
-    public BigDecimal getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    // Método para calcular o subtotal do item no carrinho
-    public BigDecimal calculateSubtotal() {
-        return productPrice.multiply(BigDecimal.valueOf(quantity));
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
+
+    public void setCartItemId(Long cartItemId) {
+        this.cartItemId = cartItemId;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setQuantity(@NotNull @Min(1) Integer quantity) {
+        this.quantity = quantity;
+    }
+
+
+
 }
